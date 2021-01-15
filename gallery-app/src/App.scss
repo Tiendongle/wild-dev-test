@@ -1,0 +1,9 @@
+@import './styles/variables.scss';
+
+body {
+  background-color: var(--body-bg-color);
+}
+
+.App {
+  text-align: center;
+}
