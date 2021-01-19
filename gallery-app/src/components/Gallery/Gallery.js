@@ -1,11 +1,17 @@
 // Dependancies
 import React, { useRef, useState } from 'react';
 
+import { gsap } from '../../gsap/src';
+import { ScrollToPlugin } from '../../gsap/src/ScrollToPlugin';
+
 // Elements
 import Slide from './elements/Slide'
 
 // Styles
 import './Gallery.scss';
+
+// Init
+gsap.registerPlugin( ScrollToPlugin );
 
 const Gallery = () => {
 
@@ -25,7 +31,7 @@ const Gallery = () => {
         if ( nextSlide < 0 || nextSlide > maxSlides - 1 ) return;
 
         // console.log( 'nextSlide', nextSlide, [ ...galleryRef.current.children ][ nextSlide ].offsetLeft );
-        
+
         setCurrentSlide( nextSlide );
         galleryRef.current.scroll({ left: [ ...galleryRef.current.children ][ nextSlide ].offsetLeft });
 
