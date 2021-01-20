@@ -9,11 +9,13 @@ import React from 'react';
 const Slide = ({ src, alt }) => {
 
     return (
-        <img 
-            className='slide'
-            src={ src } 
-            alt={ alt }
-        />
+        <div className='img-wrapper'>
+            <img 
+                // className='slide'
+                src={ src } 
+                alt={ alt }
+            />
+        </div>
     );
 }
 
