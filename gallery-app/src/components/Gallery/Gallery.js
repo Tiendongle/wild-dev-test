@@ -51,6 +51,7 @@ const Gallery = () => {
 
     // On Initial Mount, setup Draggable for swipe/touch slider functionality
     useEffect(() => {
+
         // Proxy Element so element doesn't get dragged
         var proxyElement = document.createElement("div");
         
@@ -73,11 +74,11 @@ const Gallery = () => {
         let offsetLeft = slideContainerRef.current.children[ currentSlide ].offsetLeft;
         slideTimeline.current.to( slideContainerRef.current, 
             { 
-                duration: 0.8, 
-                ease: 'power2.InOut',
+                duration: 0.5, 
+                ease: 'power4.InOut',
                 scrollTo: {
                     x: offsetLeft
-                }
+                },
             }
         ).play();
     }, [ currentSlide ]);
@@ -113,7 +114,7 @@ const Gallery = () => {
                     </div>
                     <div 
                         className='arrow arrow--right'
-                        onClick={ () => { iterateSlide( ) }}
+                        onClick={ () => { iterateSlide() }}
                     ></div>
                 </div>
             </div>

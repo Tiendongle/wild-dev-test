@@ -7,15 +7,12 @@ import React from 'react';
 // Styles
 
 const Slide = ({ src, alt }) => {
-
     return (
-        <div className='img-wrapper'>
-            <img 
-                // className='slide'
-                src={ src } 
-                alt={ alt }
-            />
-        </div>
+        <img 
+            className='slide'
+            src={ src } 
+            alt={ alt }
+        />
     );
 }
 
