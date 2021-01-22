@@ -1,0 +1,74 @@
+.slider-navigation .arrows {
+    display: flex;
+
+    .arrow {
+        position: relative;
+        display: inline-block;
+        width: 65px;
+        height: 65px;
+
+        background-color: var( --gallery-nav-bg-color );
+
+        &:before {
+            content: '';
+
+            display: block;
+            width: 25%;
+            height: 25%;
+            
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate( -50%, -50% );
+
+            background: url('../../../assets/images/arrow.svg');
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
+
+            transition: opacity 200ms ease-in-out;
+        }
+
+        &:active:before {
+            opacity: 40%;
+        }
+
+        &.disabled:before {
+            opacity: 35%;
+        }
+    }
+
+    .arrow--left {
+        border-right: 1px solid #DDDDDD;
+        &:before {
+            transform: translate( -50%, -50% ) rotate( 180deg );
+        }
+    }
+}
+
+.slider-navigation .slider-dots {
+    flex: 0 1 50%;
+    
+    display: flex;
+    padding: 0 0 0 50px;
+    text-align: left;
+    
+    box-sizing: border-box;
+
+    .dots {
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+
+        background-color: #AAAAAA;
+        margin-right: 10px;
+        transform: translateX(15px);
+        border-radius: 50%;
+
+        transition: transform 250ms ease-in-out ;
+
+        &:first-of-type, &.active {
+            transform: translateX( 0 );
+            background-color: white;
+        }
+    }
+}

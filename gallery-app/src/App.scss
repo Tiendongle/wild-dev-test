@@ -1,0 +1,11 @@
+@import './styles/variables.scss';
+
+body {
+  background-color: var(--body-bg-color);
+}
+
+.App {
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+}
