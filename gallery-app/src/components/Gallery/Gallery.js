@@ -11,21 +11,17 @@ import Slide from './elements/Slide'
 // Styles
 import './Gallery.scss';
 
+// Controller
+import { fetchAssets } from '../../controllers/api'
+
 // Init Dependancies
 gsap.registerPlugin( ScrollToPlugin, Draggable );
 
 const Gallery = () => {
-
-    // Test Data
-    const slides_data = [
-        { src: '/assets/images/img01.png', alt: 'Slider 1'},
-        { src: '/assets/images/img02.png', alt: 'Slider 2'},
-        { src: '/assets/images/img03.png', alt: 'Slider 3'},
-        { src: '/assets/images/img04.png', alt: 'Slider 4'},
-    ];
-    let maxSlides = slides_data.length;
-
     let [ currentSlide, setCurrentSlide ] = useState( 0 );
+    let [ slidesData, setSlideData ] = useState( null );
+    let [ maxSlides, setMaxSlides ] = useState( 0 );
+
     const slideContainerRef = useRef();
     const dragInstance = useRef();
 
@@ -63,8 +59,25 @@ const Gallery = () => {
         ).play();
     }
 
+    // Call API
+    useEffect(() => {
+        // Fetch assets from API
+        fetchAssets().then( response => { 
+            console.log( 'response', response );
+            if( response && response.data ) {
+                setSlideData( data => response.data.assets );
+                setMaxSlides( length => response.data.assets.length )
+            }
+        })
+        .catch( error => {
+            console.log( 'error', error )
+        });
+    }, [ ]);
+
     // On Initial Mount, setup Draggable for swipe/touch slider functionality
     useEffect(() => {
+        if (!slidesData) return;
+
         // Proxy Element so element doesn't get dragged
         var proxyElement = document.createElement("div");
         
@@ -80,23 +93,24 @@ const Gallery = () => {
 
         return () => { dragInstance.current[0].kill() }
 
-    }, [ detectDrag ]);
+    }, [ slidesData, detectDrag ]);
 
     // Each time the currentSlide changes, animate to the next slide
     useEffect( () => {
+        if (!slidesData) return;
+        
         animateSlide( currentSlide );
     }, [ currentSlide ]);
 
     return (
         <div className='gallery'>
             <div className='slider-container' ref={ slideContainerRef }>
-                { slides_data &&
-                    slides_data.map(( slide, index ) => {
+                { slidesData && slidesData.map(( slide, index ) => {
                         return (
                             <Slide 
                                 key={ index }
-                                src={ slide.src } 
-                                alt={ slide.alt }
+                                src={ slide.url } 
+                                alt={ slide.altText }
                             />
                         )
                     })
@@ -104,8 +118,8 @@ const Gallery = () => {
             </div>
             <div className='slider-navigation'>
                 <div className='slider-dots'>
-                    { slides_data &&
-                        slides_data.map(( slide, index ) => {
+                    { slidesData &&
+                        slidesData.map(( slide, index ) => {
                             return <div key={ index } className={ ( index - 1 < currentSlide ) ? 'dots active' : 'dots' }></div>
                         })
                     }
