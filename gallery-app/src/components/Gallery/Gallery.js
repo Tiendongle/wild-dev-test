@@ -49,9 +49,22 @@ const Gallery = () => {
         }
     }, [ iterateSlide ]);
 
+    // Animate Slide on scroll or swipe 
+    const animateSlide = ( currentSlide ) => {
+        let offsetLeft = slideContainerRef.current.children[ currentSlide ].offsetLeft;
+        slideTimeline.current.to( slideContainerRef.current, 
+            { 
+                duration: 0.5, 
+                ease: 'power4.InOut',
+                scrollTo: {
+                    x: offsetLeft
+                },
+            }
+        ).play();
+    }
+
     // On Initial Mount, setup Draggable for swipe/touch slider functionality
     useEffect(() => {
-
         // Proxy Element so element doesn't get dragged
         var proxyElement = document.createElement("div");
         
@@ -71,16 +84,7 @@ const Gallery = () => {
 
     // Each time the currentSlide changes, animate to the next slide
     useEffect( () => {
-        let offsetLeft = slideContainerRef.current.children[ currentSlide ].offsetLeft;
-        slideTimeline.current.to( slideContainerRef.current, 
-            { 
-                duration: 0.5, 
-                ease: 'power4.InOut',
-                scrollTo: {
-                    x: offsetLeft
-                },
-            }
-        ).play();
+        animateSlide( currentSlide );
     }, [ currentSlide ]);
 
     return (
