@@ -2,11 +2,12 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 
 import { gsap } from '../../gsap/src';
-import { ScrollToPlugin } from '../../gsap/src/ScrollToPlugin';
 import { Draggable } from '../../gsap/src/Draggable';
+import { ScrollToPlugin } from '../../gsap/src/ScrollToPlugin';
 
 // Elements
 import Slide from './elements/Slide'
+import SliderNavigation from './elements/SliderNavigation';
 
 // Styles
 import './Gallery.scss';
@@ -17,23 +18,22 @@ import { fetchAssets } from '../../controllers/api'
 // Init Dependancies
 gsap.registerPlugin( ScrollToPlugin, Draggable );
 
+
 const Gallery = () => {
-    let [ currentSlide, setCurrentSlide ] = useState( 0 );
-    let [ slidesData, setSlideData ] = useState( null );
     let [ maxSlides, setMaxSlides ] = useState( 0 );
+    let [ slidesData, setSlideData ] = useState( null );
+    let [ currentSlide, setCurrentSlide ] = useState( 0 );
 
-    const slideContainerRef = useRef();
     const dragInstance = useRef();
+    const slideContainerRef = useRef();
+    const slideTimeline = useRef(gsap.timeline({ paused: true }));
 
-    const slideTimeline = useRef(gsap.timeline({
-        paused: true
-    }));
     
     // Method to check to move onto the next requested slide
     const iterateSlide = useCallback(( iterator = 1) => {
         let nextSlide = currentSlide + iterator;
+
         if ( nextSlide < 0 || nextSlide > maxSlides - 1 ) return;
-        
         setCurrentSlide( currentSlide => nextSlide );
     }, [ currentSlide, maxSlides ] );
 
@@ -45,8 +45,9 @@ const Gallery = () => {
         }
     }, [ iterateSlide ]);
 
+
     // Animate Slide on scroll or swipe 
-    const animateSlide = ( currentSlide ) => {
+    const animateSlide = ( currentSlide ) => {        
         let offsetLeft = slideContainerRef.current.children[ currentSlide ].offsetLeft;
         slideTimeline.current.to( slideContainerRef.current, 
             { 
@@ -59,11 +60,11 @@ const Gallery = () => {
         ).play();
     }
 
+
     // Call API
     useEffect(() => {
         // Fetch assets from API
         fetchAssets().then( response => { 
-            console.log( 'response', response );
             if( response && response.data ) {
                 setSlideData( data => response.data.assets );
                 setMaxSlides( length => response.data.assets.length )
@@ -72,7 +73,7 @@ const Gallery = () => {
         .catch( error => {
             console.log( 'error', error )
         });
-    }, [ ]);
+    }, [] );
 
     // On Initial Mount, setup Draggable for swipe/touch slider functionality
     useEffect(() => {
@@ -93,14 +94,14 @@ const Gallery = () => {
 
         return () => { dragInstance.current[0].kill() }
 
-    }, [ slidesData, detectDrag ]);
+    }, [ slidesData, detectDrag ] );
 
     // Each time the currentSlide changes, animate to the next slide
     useEffect( () => {
         if (!slidesData) return;
-        
+
         animateSlide( currentSlide );
-    }, [ currentSlide ]);
+    }, [ slidesData, currentSlide ] );
 
     return (
         <div className='gallery'>
@@ -116,26 +117,12 @@ const Gallery = () => {
                     })
                 }
             </div>
-            <div className='slider-navigation'>
-                <div className='slider-dots'>
-                    { slidesData &&
-                        slidesData.map(( slide, index ) => {
-                            return <div key={ index } className={ ( index - 1 < currentSlide ) ? 'dots active' : 'dots' }></div>
-                        })
-                    }
-                </div>
-                <div className='arrows'>
-                    <div 
-                        className='arrow arrow--left'
-                        onClick={ () => { iterateSlide( -1 ) }}
-                    >
-                    </div>
-                    <div 
-                        className='arrow arrow--right'
-                        onClick={ () => { iterateSlide() }}
-                    ></div>
-                </div>
-            </div>
+
+            <SliderNavigation 
+                data={ slidesData }
+                currentSlide={ currentSlide }
+                nextSlide={ iterateSlide }
+            />
         </div>
     );
 }
