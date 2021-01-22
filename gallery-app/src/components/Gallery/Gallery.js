@@ -1,6 +1,7 @@
 // Dependancies
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 
+// GSAP
 import { gsap } from '../../gsap/src';
 import { Draggable } from '../../gsap/src/Draggable';
 import { ScrollToPlugin } from '../../gsap/src/ScrollToPlugin';
@@ -51,7 +52,7 @@ const Gallery = () => {
         let offsetLeft = slideContainerRef.current.children[ currentSlide ].offsetLeft;
         slideTimeline.current.to( slideContainerRef.current, 
             { 
-                duration: 0.5, 
+                duration: 0.25, 
                 ease: 'power4.InOut',
                 scrollTo: {
                     x: offsetLeft
@@ -118,11 +119,13 @@ const Gallery = () => {
                 }
             </div>
 
-            <SliderNavigation 
-                data={ slidesData }
-                currentSlide={ currentSlide }
-                nextSlide={ iterateSlide }
-            />
+            { slidesData && 
+                <SliderNavigation 
+                    data={ slidesData }
+                    currentSlide={ currentSlide }
+                    nextSlide={ iterateSlide }
+                />
+            }
         </div>
     );
 }
