@@ -1,5 +1,6 @@
 // Dependancies
 import React from 'react';
+import classnames from 'classnames';
 
 // Elements
 
@@ -13,18 +14,36 @@ const SliderNavigation = ({ data, currentSlide, nextSlide }) => {
             <div className='slider-dots'>
                 { data &&
                     data.map(( slide, index ) => {
-                        return <div key={ index } className={ ( index - 1 < currentSlide ) ? 'dots active' : 'dots' }></div>
+                        return <div 
+                            key={ index } 
+                            className={ classnames(
+                                'dots', 
+                                {
+                                    active: index - 1 < currentSlide
+                                }
+                            )}
+                        ></div>
                     })
                 }
             </div>
             <div className='arrows'>
                 <div 
-                    className='arrow arrow--left'
+                    className={ classnames(
+                        'arrow arrow--left', 
+                        {
+                            disabled: currentSlide <= 0
+                        }
+                    )}
                     onClick={ () => { nextSlide( -1 ) }}
                 >
                 </div>
                 <div 
-                    className='arrow arrow--right'
+                    className={ classnames(
+                        'arrow arrow--right',
+                        { 
+                            disabled: currentSlide >= data.length - 1
+                        }
+                    )}
                     onClick={ () => { nextSlide() }}
                 ></div>
             </div>
